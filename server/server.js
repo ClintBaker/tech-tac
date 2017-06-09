@@ -23,6 +23,14 @@ app.post('/parts', (req, res) => {
   });
 });
 
+app.get('/parts', (req, res) => {
+  Part.find().then((parts) => {
+    res.send({parts});
+  }, (e) => {
+    res.status(400).send(e);
+  });
+});
+
 app.listen(3000, () => {
   console.log('Started on port 3000');
 });
