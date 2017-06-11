@@ -1,5 +1,6 @@
 var express = require('express');
 var bodyParser = require('body-parser');
+var {ObjectID} = require('mongodb');
 
 var {mongoose} = require('./db/mongoose');
 var {Part} = require('./models/part');
@@ -28,6 +29,25 @@ app.get('/parts', (req, res) => {
     res.send({parts});
   }, (e) => {
     res.status(400).send(e);
+  });
+});
+
+// GET/todos/1234235
+
+app.get('/parts/:id', (req, res) => {
+  var id = req.params.id;
+
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+
+  Part.findById(id).then((part) => {
+    if (!part) {
+      return res.status(404).send();
+    }
+    res.send({part});
+  }).catch((e) => {
+    res.status(400).send();
   });
 });
 
