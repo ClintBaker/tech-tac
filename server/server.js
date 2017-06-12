@@ -52,6 +52,24 @@ app.get('/parts/:id', (req, res) => {
   });
 });
 
+app.delete('/parts/:id', (req, res) => {
+  var id = req.params.id;
+
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+
+  Part.findByIdAndRemove(id).then((part) => {
+    if (!part) {
+      return res.status(404).send();
+    }
+
+    res.send({part, deleted: true});
+  }).catch((e) => {
+    res.status(400).send();
+  });
+});
+
 app.listen(port, () => {
   console.log(`Started on port ${port}`);
 });
