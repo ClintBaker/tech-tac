@@ -1,6 +1,7 @@
-var express = require('express');
-var bodyParser = require('body-parser');
-var {ObjectID} = require('mongodb');
+const express = require('express');
+const _ = require('lodash');
+const bodyParser = require('body-parser');
+const {ObjectID} = require('mongodb');
 
 var {mongoose} = require('./db/mongoose');
 var {Part} = require('./models/part');
@@ -10,6 +11,8 @@ var app = express();
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
+
+// Create Part
 
 app.post('/parts', (req, res) => {
   var part = new Part({
@@ -25,6 +28,8 @@ app.post('/parts', (req, res) => {
   });
 });
 
+// Get all Parts
+
 app.get('/parts', (req, res) => {
   Part.find().then((parts) => {
     res.send({parts});
@@ -33,7 +38,7 @@ app.get('/parts', (req, res) => {
   });
 });
 
-// GET/todos/1234235
+// Get Parts by ID
 
 app.get('/parts/:id', (req, res) => {
   var id = req.params.id;
@@ -52,6 +57,8 @@ app.get('/parts/:id', (req, res) => {
   });
 });
 
+// Delete Part by ID
+
 app.delete('/parts/:id', (req, res) => {
   var id = req.params.id;
 
@@ -68,6 +75,28 @@ app.delete('/parts/:id', (req, res) => {
   }).catch((e) => {
     res.status(400).send();
   });
+});
+
+// Update Part by ID
+
+app.patch('/parts/:id', (req, res) => {
+  var id = req.params.id;
+  var body = _.pick(req.body, ['name', 'description']);
+
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+
+  Part.findByIdAndUpdate(id, {$set: body}, {new: true}).then((part) => {
+    if (!part) {
+      return res.status(404).send();
+    }
+
+    res.send({part});
+  }).catch((e) => {
+    res.status(400).send();
+  })
+
 });
 
 app.listen(port, () => {
