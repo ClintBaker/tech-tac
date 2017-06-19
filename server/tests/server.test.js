@@ -97,5 +97,42 @@ describe('GET /parts/:id', () => {
       .get('/parts/1234')
       .expect(404)
       .end(done);
-  } )
+  })
+});
+
+
+describe('DELETE /parts/:id', () => {
+  it('should remove a part', (done) => {
+    var hexId = parts[1]._id.toHexString();
+    request(app)
+      .delete(`/parts/${hexId}`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.part._id).toBe(hexId);
+      })
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        Part.findById(hexId).then((part) => {
+          expect(part).toNotExist();
+          done();
+        }).catch((e) => done(e));
+      });
+  });
+
+  it('should return 404 if part not found', (done) => {
+    request(app)
+      .delete(`/parts/${new ObjectID().toHexString}`)
+      .expect(404)
+      .end(done);
+  });
+
+  it('should return 404 if ObjectID is invalid', (done) => {
+    request(app)
+      .delete('/parts/1234')
+      .expect(404)
+      .end(done);
+  });
 });
