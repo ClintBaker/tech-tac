@@ -12,6 +12,7 @@ const parts = [
     description: 'awesome'
   }, {
     name: '5.5 Anchor',
+    description: 'new description',
     _id: new ObjectID()
   }];
 
@@ -133,6 +134,25 @@ describe('DELETE /parts/:id', () => {
     request(app)
       .delete('/parts/1234')
       .expect(404)
+      .end(done);
+  });
+});
+
+describe('PATCH /parts/:id', () => {
+  it('should update part', (done) => {
+    var id = parts[0]._id.toHexString();
+    var updates = {
+      name: 'New name',
+      description: 'New desc'
+    };
+    request(app)
+      .patch(`/parts/${id}`)
+      .send({name: updates.name, description: updates.description})
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.part.name).toBe(updates.name);
+        expect(res.body.part.description).toBe(updates.description);
+      })
       .end(done);
   });
 });
