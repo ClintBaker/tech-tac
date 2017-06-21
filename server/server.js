@@ -4,12 +4,13 @@ const express = require('express');
 const _ = require('lodash');
 const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
-var bcrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs');
 
 var {mongoose} = require('./db/mongoose');
 var {Part} = require('./models/part');
 var {User} = require('./models/user');
 var {authenticate} = require('./middleware/authenticate');
+var {authenticateAdmin} = require('./middleware/authenticateAdmin');
 
 var app = express();
 const port = process.env.PORT;
@@ -18,10 +19,11 @@ app.use(bodyParser.json());
 
 // Create Part
 
-app.post('/parts', (req, res) => {
+app.post('/parts', authenticateAdmin, (req, res) => {
   var part = new Part({
     name: req.body.name,
-    description: req.body.description
+    description: req.body.description,
+    _creator: req.user._id
   });
 
   part.save().then((doc) => {
@@ -34,7 +36,10 @@ app.post('/parts', (req, res) => {
 
 // Get all Parts
 
-app.get('/parts', (req, res) => {
+app.get('/parts', authenticate, (req, res) => {
+  // Part.find({
+  //   _creator: req.user._id
+  // })
   Part.find().then((parts) => {
     res.send({parts});
   }, (e) => {
@@ -44,7 +49,7 @@ app.get('/parts', (req, res) => {
 
 // Get Parts by ID
 
-app.get('/parts/:id', (req, res) => {
+app.get('/parts/:id', authenticate, (req, res) => {
   var id = req.params.id;
 
   if (!ObjectID.isValid(id)) {
@@ -63,14 +68,17 @@ app.get('/parts/:id', (req, res) => {
 
 // Delete Part by ID
 
-app.delete('/parts/:id', (req, res) => {
+app.delete('/parts/:id', authenticateAdmin, (req, res) => {
   var id = req.params.id;
 
   if (!ObjectID.isValid(id)) {
     return res.status(404).send();
   }
 
-  Part.findByIdAndRemove(id).then((part) => {
+  Part.findOneAndRemove({
+    _id: id,
+    _creator: req.user._id
+  }).then((part) => {
     if (!part) {
       return res.status(404).send();
     }
@@ -83,7 +91,7 @@ app.delete('/parts/:id', (req, res) => {
 
 // Update Part by ID
 
-app.patch('/parts/:id', (req, res) => {
+app.patch('/parts/:id', authenticateAdmin, (req, res) => {
   var id = req.params.id;
   var body = _.pick(req.body, ['name', 'description']);
 
@@ -91,7 +99,7 @@ app.patch('/parts/:id', (req, res) => {
     return res.status(404).send();
   }
 
-  Part.findByIdAndUpdate(id, {$set: body}, {new: true}).then((part) => {
+  Part.findOneAndUpdate({_id: id, _creator: req.user._id}, {$set: body}, {new: true}).then((part) => {
     if (!part) {
       return res.status(404).send();
     }

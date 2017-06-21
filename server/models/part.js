@@ -12,6 +12,10 @@ var Part = mongoose.model('Parts', {
     require: true,
     minlength: 1,
     trim: true
+  },
+  _creator: {
+    required: true,
+    type: mongoose.Schema.Types.ObjectId
   }
 });
 

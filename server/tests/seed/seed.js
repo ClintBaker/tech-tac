@@ -4,12 +4,13 @@ const jwt = require('jsonwebtoken');
 const {Part} = require('./../../models/part');
 const {User} = require('./../../models/user');
 
-const userOneId = new ObjectID(); 
+const userOneId = new ObjectID();
 const userTwoId = new ObjectID();
 const users = [{
   _id: userOneId,
   email: 'clinton@gmail.com',
   password: 'userOnePass',
+  isAdmin: true,
   tokens: [{
     access: 'auth',
     token: jwt.sign({_id: userOneId, access: 'auth'}, 'abc123').toString()
@@ -17,18 +18,25 @@ const users = [{
 }, {
   _id: userTwoId,
   email: 'jendog@example.com',
-  password: 'userTwoPass'
+  password: 'userTwoPass',
+  isAdmin: true,
+  tokens: [{
+    access: 'auth',
+    token: jwt.sign({_id: userTwoId, access: 'auth'}, 'abc123').toString()
+  }]
 }];
 
 const parts = [
   {
     _id: new ObjectID(),
     name: '4.5 Anchor',
-    description: 'awesome'
+    description: 'awesome',
+    _creator: userOneId
   }, {
     name: '5.5 Anchor',
     description: 'new description',
-    _id: new ObjectID()
+    _id: new ObjectID(),
+    _creator: userTwoId
   }];
 
   const populateParts = (done) => {

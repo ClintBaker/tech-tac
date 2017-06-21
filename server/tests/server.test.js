@@ -16,6 +16,7 @@ describe('POST /parts', () => {
 
     request(app)
       .post('/parts')
+      .set('x-auth', users[0].tokens[0].token)
       .send({name})
       .expect(200)
       .expect((res) => {
@@ -55,6 +56,7 @@ describe('GET /parts', () => {
   it('should get all todos', (done) => {
     request(app)
       .get('/parts')
+      .set('x-auth', users[0].tokens[0].token)
       .expect(200)
       .expect((res) => {
         expect(res.body.parts.length).toBe(2);
@@ -67,6 +69,7 @@ describe('GET /parts/:id', () => {
   it('should return part doc', (done) => {
     request(app)
       .get(`/parts/${parts[0]._id.toHexString()}`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(200)
       .expect((res) => {
         expect(res.body.part.name).toBe(parts[0].name);
@@ -77,6 +80,7 @@ describe('GET /parts/:id', () => {
   it('should return 404 if part not found', (done) => {
     request(app)
     .get(`/parts/${new ObjectID().toHexString}`)
+    .set('x-auth', users[0].tokens[0].token)
     .expect(404)
     .end(done);
   });
@@ -84,6 +88,7 @@ describe('GET /parts/:id', () => {
   it('should return 404 for non-object ids', (done) => {
     request(app)
       .get('/parts/1234')
+      .set('x-auth', users[0].tokens[0].token)
       .expect(404)
       .end(done);
   })
@@ -95,6 +100,7 @@ describe('DELETE /parts/:id', () => {
     var hexId = parts[1]._id.toHexString();
     request(app)
       .delete(`/parts/${hexId}`)
+      .set('x-auth', users[1].tokens[0].token)
       .expect(200)
       .expect((res) => {
         expect(res.body.part._id).toBe(hexId);
@@ -111,9 +117,28 @@ describe('DELETE /parts/:id', () => {
       });
   });
 
+  it('should not remove a part you did not create', (done) => {
+    var hexId = parts[0]._id.toHexString();
+    request(app)
+      .delete(`/parts/${hexId}`)
+      .set('x-auth', users[1].tokens[0].token)
+      .expect(404)
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+
+        Part.findById(hexId).then((part) => {
+          expect(part).toExist();
+          done();
+        }).catch((e) => done(e));
+      });
+  });
+
   it('should return 404 if part not found', (done) => {
     request(app)
       .delete(`/parts/${new ObjectID().toHexString}`)
+      .set('x-auth', users[0].tokens[0].token)
       .expect(404)
       .end(done);
   });
@@ -121,6 +146,7 @@ describe('DELETE /parts/:id', () => {
   it('should return 404 if ObjectID is invalid', (done) => {
     request(app)
       .delete('/parts/1234')
+      .set('x-auth', users[0].tokens[0].token)
       .expect(404)
       .end(done);
   });
@@ -135,12 +161,27 @@ describe('PATCH /parts/:id', () => {
     };
     request(app)
       .patch(`/parts/${id}`)
+      .set('x-auth', users[0].tokens[0].token)
       .send({name: updates.name, description: updates.description})
       .expect(200)
       .expect((res) => {
         expect(res.body.part.name).toBe(updates.name);
         expect(res.body.part.description).toBe(updates.description);
       })
+      .end(done);
+  });
+
+  it('should not update part of different user', (done) => {
+    var id = parts[0]._id.toHexString();
+    var updates = {
+      name: 'New name',
+      description: 'New desc'
+    };
+    request(app)
+      .patch(`/parts/${id}`)
+      .set('x-auth', users[1].tokens[0].token)
+      .send({name: updates.name, description: updates.description})
+      .expect(404)
       .end(done);
   });
 });
@@ -234,7 +275,7 @@ describe('POST /users/login', () => {
         }
 
         User.findById(users[1]._id).then((user) => {
-          expect(user.tokens[0]).toInclude({
+          expect(user.tokens[1]).toInclude({
             access: 'auth',
             token: res.headers['x-auth'] /////problem problem problem no problem
           });
@@ -257,7 +298,7 @@ describe('POST /users/login', () => {
         }
 
         User.findById(users[1]._id).then((user) => {
-          expect(user.tokens.length).toBe(0);
+          expect(user.tokens.length).toBe(1);
           done();
         }).catch((e) => done(e));
       });
