@@ -8,6 +8,7 @@ const {ObjectID} = require('mongodb');
 var {mongoose} = require('./db/mongoose');
 var {Part} = require('./models/part');
 var {User} = require('./models/user');
+var {authenticate} = require('./middleware/authenticate');
 
 var app = express();
 const port = process.env.PORT;
@@ -99,6 +100,13 @@ app.patch('/parts/:id', (req, res) => {
     res.status(400).send();
   })
 
+});
+
+
+
+//GET /users/me
+app.get('/users/me', authenticate, (req, res) => {
+  res.send(req.user);
 });
 
 
