@@ -5,6 +5,7 @@ const _ = require('lodash');
 const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
 const bcrypt = require('bcryptjs');
+const cors = require('cors');
 
 var {mongoose} = require('./db/mongoose');
 var {Part} = require('./models/part');
@@ -14,6 +15,8 @@ var {authenticate} = require('./middleware/authenticate');
 var {authenticateAdmin} = require('./middleware/authenticateAdmin');
 
 var app = express();
+app.use(cors());
+
 const port = process.env.PORT;
 
 app.use(bodyParser.json());
