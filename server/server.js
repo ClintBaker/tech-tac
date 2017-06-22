@@ -9,6 +9,7 @@ const bcrypt = require('bcryptjs');
 var {mongoose} = require('./db/mongoose');
 var {Part} = require('./models/part');
 var {User} = require('./models/user');
+var {Order} = require('./models/order');
 var {authenticate} = require('./middleware/authenticate');
 var {authenticateAdmin} = require('./middleware/authenticateAdmin');
 
@@ -152,6 +153,73 @@ app.delete('/users/me/token', authenticate, (req, res) => {
   }, () => {
     res.status(400).send();
   });
+});
+
+//POST /orders
+app.post('/orders', authenticate, (req, res) => {
+  var order = new Order({
+    parts: req.body.parts,
+    _companyId: req.user._id
+  });
+
+  order.save().then((doc) => {
+    res.send(doc);
+  }, (e) => {
+    res.status(400).send(e);
+  });
+});
+
+//GET /orders/all
+app.get('/orders/all', authenticateAdmin, (req, res) => {
+  Order.find().then((orders) => {
+    res.send({orders});
+  }, (e) => {
+    res.status(400).send(e);
+  });
+});
+
+//GET /orders
+
+app.get('/orders', authenticate, (req, res) => {
+  Order.find({
+    _companyId: req.user._id
+  }).then((orders) => {
+    res.send({orders});
+  }, (e) => {
+    res.status(400).send(e);
+  });
+});
+
+//GET /orders/:id
+app.get('/orders/:id', authenticate, (req, res) => {
+  var id = req.params.id;
+
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+
+  if (req.user.isAdmin) {
+    Order.findById(id).then((order) => {
+      if (!order) {
+        return res.status(404).send();
+      }
+      res.send({order});
+    }).catch((e) => {
+      res.status(400).send();
+    })
+  } else {
+    Order.findOne({
+      _companyId: req.user.id,
+      _id: req._id
+    }).then((order) => {
+      if (!order) {
+        return res.status(404).send();
+      }
+      res.send({order});
+    }).catch((e) => {
+      res.status(400).send();
+    });
+  }
 });
 
 

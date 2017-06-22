@@ -1,3 +1,24 @@
+var mongoose = require('mongoose');
+
+var Order = mongoose.model('Orders', {
+  status: {
+    type: String,
+    require: true,
+    default: 'pending'
+  },
+  parts: [{
+    _partId: mongoose.Schema.Types.ObjectId,
+    quantity: Number
+  }],
+  _companyId: {
+    required: true,
+    type: mongoose.Schema.Types.ObjectId
+  }
+});
+
+module.exports = {Order};
+
+
 // {
 //   _id: 'a;lsdfjwofjsadlkfj',
 //   order_number: '12353245',
