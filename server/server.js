@@ -15,7 +15,13 @@ var {authenticate} = require('./middleware/authenticate');
 var {authenticateAdmin} = require('./middleware/authenticateAdmin');
 
 var app = express();
-app.use(cors());
+
+const corsOptions = {
+  allowedHeaders: ['Accept-Version', 'Authorization', 'Credentials', 'Content-Type'],
+  exposedHeaders: ['X-Request-Id', 'x-auth'],
+};
+
+app.use(cors(corsOptions));
 
 const port = process.env.PORT;
 
