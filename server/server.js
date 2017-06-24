@@ -17,8 +17,10 @@ var {authenticateAdmin} = require('./middleware/authenticateAdmin');
 var app = express();
 
 const corsOptions = {
-  allowedHeaders: ['Accept-Version', 'Authorization', 'Credentials', 'Content-Type'],
+  origin: 'localhost:3000',
+  allowedHeaders: ['Accept-Version', 'Authorization', 'x-auth', 'Credentials', 'Content-Type'],
   exposedHeaders: ['X-Request-Id', 'x-auth'],
+  preflightContinue: true
 };
 
 app.use(cors(corsOptions));
