@@ -27,6 +27,8 @@ const port = process.env.PORT;
 
 app.use(bodyParser.json());
 
+app.options('*', cors());
+
 // Create Part
 
 app.post('/parts', authenticateAdmin, (req, res) => {
@@ -156,7 +158,8 @@ app.post('/users/login', (req, res) => {
   });
 });
 
-app.delete('/users/me/token', authenticate, (req, res) => {
+//DELETE /users/me/token
+app.delete('/users/me/token', authenticate, cors(), (req, res) => {
   req.user.removeToken(req.token).then(() => {
     res.status(200).send();
   }, () => {
