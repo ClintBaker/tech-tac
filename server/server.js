@@ -17,7 +17,7 @@ var {authenticateAdmin} = require('./middleware/authenticateAdmin');
 var app = express();
 
 const corsOptions = {
-  origin: 'localhost:3000',
+  origin: 'http://localhost:3000',
   allowedHeaders: ['Accept-Version', 'Authorization', 'x-auth', 'Credentials', 'Content-Type'],
   exposedHeaders: ['X-Request-Id', 'x-auth'],
   preflightContinue: true
@@ -159,8 +159,7 @@ app.post('/users/login', (req, res) => {
 });
 
 //DELETE /users/me/token
-app.options('/users/me/token', cors());
-app.delete('/users/me/token', cors(), authenticate, (req, res) => {
+app.delete('/users/me/token', authenticate, (req, res) => {
   req.user.removeToken(req.token).then(() => {
     res.status(200).send();
   }, () => {
