@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
+const moment = require('moment');
 
 var {mongoose} = require('./db/mongoose');
 var {Part} = require('./models/part');
@@ -174,7 +175,7 @@ app.post('/orders', authenticate, (req, res) => {
   var order = new Order({
     parts: body.parts,
     _companyId: body._companyId,
-    createdAt: timestamp
+    createdAt: moment()
   });
 
   order.save().then((doc) => {
