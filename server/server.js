@@ -170,9 +170,11 @@ app.delete('/users/me/token', authenticate, (req, res) => {
 //POST /orders
 app.post('/orders', authenticate, (req, res) => {
   var body = _.pick(req.body, ['parts', '_companyId']);
+  var timestamp = Date.now();
   var order = new Order({
     parts: body.parts,
-    _companyId: body._companyId
+    _companyId: body._companyId,
+    createdAt: timestamp
   });
 
   order.save().then((doc) => {

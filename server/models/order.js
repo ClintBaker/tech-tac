@@ -13,6 +13,10 @@ var Order = mongoose.model('Orders', {
   _companyId: {
     required: true,
     type: mongoose.Schema.Types.ObjectId
+  },
+  createdAt: {
+    default: Date.now(),
+    type: Number
   }
 });
 
