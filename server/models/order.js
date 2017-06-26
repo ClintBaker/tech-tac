@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var moment = require('moment');
 
 var Order = mongoose.model('Orders', {
   status: {
@@ -15,7 +16,7 @@ var Order = mongoose.model('Orders', {
     type: mongoose.Schema.Types.ObjectId
   },
   createdAt: {
-    default: Date.now(),
+    default: moment(),
     type: Number
   }
 });
