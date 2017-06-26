@@ -7,9 +7,12 @@ var Order = mongoose.model('Orders', {
     default: 'pending'
   },
   parts: [{
+    _partId: mongoose.Schema.Types.ObjectId,
+    quantity: Number
   }],
   _companyId: {
-    required: true
+    required: true,
+    type: mongoose.Schema.Types.ObjectId
   }
 });
 
