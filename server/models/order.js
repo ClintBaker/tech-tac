@@ -17,7 +17,7 @@ var Order = mongoose.model('Orders', {
   },
   createdAt: {
     default: moment(),
-    type: Number
+    type: String
   }
 });
 
