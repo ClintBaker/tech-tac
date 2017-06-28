@@ -200,7 +200,7 @@ app.post('/orders', authenticate, (req, res) => {
   var order = new Order({
     parts: body.parts,
     _companyId: body._companyId,
-    createdAt: moment()
+    createdAt: Date.now()
   });
 
   order.save().then((doc) => {
