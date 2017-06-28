@@ -16,7 +16,7 @@ var Order = mongoose.model('Orders', {
     type: mongoose.Schema.Types.ObjectId
   },
   createdAt: {
-    default: moment(),
+    default: Date.now(),
     type: String
   }
 });
