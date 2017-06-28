@@ -26,6 +26,48 @@ var UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  companyName: {
+    type: String,
+    required: false
+  },
+  phone: {
+    type: Number,
+    required: false
+  },
+  url: {
+    type: String,
+    required: false
+  },
+  contactName: {
+    type: String,
+    required: false
+  },
+  address: {
+    addressLine1: {
+      type: String,
+      required: false
+    },
+    addressLine2: {
+      type: String,
+      required: false
+    },
+    city: {
+      type: String,
+      required: false
+    },
+    state: {
+      type: String,
+      required: false
+    },
+    zip: {
+      type: Number,
+      required: false
+    },
+    country: {
+      type: String,
+      required: false
+    }
+  },
   tokens: [{
     access: {
       type: String,
@@ -42,7 +84,7 @@ UserSchema.methods.toJSON = function () {
   var user = this;
   var userObject = user.toObject();
 
-  return _.pick(userObject, ['_id', 'email', 'isAdmin']);
+  return _.pick(userObject, ['_id', 'email', 'isAdmin', 'companyName', 'phone', 'url', 'contactName', 'address']);
 };
 
 UserSchema.methods.generateAuthToken = function () {

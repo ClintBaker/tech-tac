@@ -159,6 +159,31 @@ app.post('/users/login', (req, res) => {
   });
 });
 
+//PATCH /users  **Needs testing
+app.patch('/users/:id', authenticate, (req, res) => {
+  var id = req.params.id;
+  var body = _.pick(req.body, ['password', 'email', 'companyName', 'phone', 'url', 'contactName', 'address']);
+
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+
+  if (req.user._id != id) {
+    return res.status(401).send();
+  }
+
+  User.findOneAndUpdate({_id: req.user._id}, {$set: body}, {new: true}).then((user) => {
+    if (!user) {
+      return res.status(404).send();
+    }
+
+    res.send({user});
+  }).catch((e) => {
+    res.status(400).send();
+  })
+
+});
+
 //DELETE /users/me/token
 app.delete('/users/me/token', authenticate, (req, res) => {
   req.user.removeToken(req.token).then(() => {
@@ -225,7 +250,7 @@ app.get('/orders/:id', authenticate, (req, res) => {
     })
   } else {
     Order.findOne({
-      _companyId: req.user.id,
+      _companyId: req.user._id,
       _id: req._id
     }).then((order) => {
       if (!order) {
