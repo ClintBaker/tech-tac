@@ -134,7 +134,7 @@ app.get('/users/me', authenticate, (req, res) => {
 
 // POST /users
 app.post('/users', (req, res) => {
-  var body = _.pick(req.body, ['email', 'password']);
+  var body = _.pick(req.body, ['email', 'password', 'companyName', 'phone', 'url', 'contactName', 'address']);
   var user = new User(body);
 
   user.save().then(() => {
