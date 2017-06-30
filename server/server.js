@@ -38,7 +38,8 @@ app.post('/parts', authenticateAdmin, (req, res) => {
     description: req.body.description,
     _creator: req.user._id,
     number: req.body.number,
-    image: req.body.image
+    image: req.body.image,
+    price: req.body.price
   });
 
   part.save().then((doc) => {
@@ -98,7 +99,7 @@ app.delete('/parts/:id', authenticateAdmin, (req, res) => {
       return res.status(404).send();
     }
 
-    res.send({part, deleted: true});
+    res.send({part});
   }).catch((e) => {
     res.status(400).send();
   });
@@ -108,7 +109,7 @@ app.delete('/parts/:id', authenticateAdmin, (req, res) => {
 
 app.patch('/parts/:id', authenticateAdmin, (req, res) => {
   var id = req.params.id;
-  var body = _.pick(req.body, ['name', 'description']);
+  var body = _.pick(req.body, ['name', 'description', 'image', 'price', 'number']);
 
   if (!ObjectID.isValid(id)) {
     return res.status(404).send();

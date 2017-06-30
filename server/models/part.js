@@ -19,6 +19,9 @@ var Part = mongoose.model('Parts', {
   image: {
     type: String
   },
+  price: {
+    type: Number
+  },
   _creator: {
     required: true,
     type: mongoose.Schema.Types.ObjectId
