@@ -28,29 +28,24 @@ var UserSchema = new mongoose.Schema({
   },
   companyName: {
     type: String,
-    required: false,
-    default: ''
+    required: false
   },
   phone: {
     type: Number,
-    required: false,
-    default: ''
+    required: false
   },
   url: {
     type: String,
-    required: false,
-    default: ''
+    required: false
   },
   contactName: {
     type: String,
-    required: false,
-    default: ''
+    required: false
   },
   address: {
     addressLine1: {
       type: String,
-      required: false,
-      default: ''
+      required: false
     },
     addressLine2: {
       type: String,
@@ -58,23 +53,19 @@ var UserSchema = new mongoose.Schema({
     },
     city: {
       type: String,
-      required: false,
-      default: ''
+      required: false
     },
     state: {
       type: String,
-      required: false,
-      default: ''
+      required: false
     },
     zip: {
       type: Number,
-      required: false,
-      default: ''
+      required: false
     },
     country: {
       type: String,
-      required: false,
-      default: ''
+      required: false
     }
   },
   tokens: [{

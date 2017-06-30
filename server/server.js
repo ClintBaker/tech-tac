@@ -36,7 +36,9 @@ app.post('/parts', authenticateAdmin, (req, res) => {
   var part = new Part({
     name: req.body.name,
     description: req.body.description,
-    _creator: req.user._id
+    _creator: req.user._id,
+    number: req.body.number,
+    image: req.body.image
   });
 
   part.save().then((doc) => {

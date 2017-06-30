@@ -13,6 +13,12 @@ var Part = mongoose.model('Parts', {
     minlength: 1,
     trim: true
   },
+  number: {
+    type: Number
+  },
+  image: {
+    type: String
+  },
   _creator: {
     required: true,
     type: mongoose.Schema.Types.ObjectId
