@@ -9,7 +9,14 @@ var Order = mongoose.model('Orders', {
   },
   parts: [{
     _partId: mongoose.Schema.Types.ObjectId,
-    quantity: Number
+    quantity: Number,
+    _creator: mongoose.Schema.Types.ObjectId,
+    price: Number,
+    name: String,
+    image: String,
+    description: String,
+    number: Number,
+    subtotal: Number
   }],
   _companyId: {
     required: true,
