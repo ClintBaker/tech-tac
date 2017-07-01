@@ -25,6 +25,9 @@ var Order = mongoose.model('Orders', {
   createdAt: {
     default: Date.now(),
     type: String
+  },
+  total: {
+    type: Number
   }
 });
 
