@@ -214,6 +214,26 @@ app.post('/orders', authenticate, (req, res) => {
   });
 });
 
+app.patch('/orders/:id', authenticateAdmin, (req, res) => {
+  var id = req.params.id;
+  var body = _.pick(req.body, ['status']);
+
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+
+  Order.findOneAndUpdate({_id: id}, {$set: body}, {new: true}).then((order) => {
+    if (!order) {
+      return res.status(404).send();
+    }
+
+    res.send({order});
+  }).catch((e) => {
+    res.status(400).send();
+  })
+
+});
+
 //GET /orders/all
 app.get('/orders/all', authenticateAdmin, (req, res) => {
   Order.find().then((orders) => {
