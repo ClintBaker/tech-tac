@@ -22,6 +22,7 @@ var Part = mongoose.model('Parts', {
   price: {
     type: Number
   },
+  categories: [],
   _creator: {
     required: true,
     type: mongoose.Schema.Types.ObjectId

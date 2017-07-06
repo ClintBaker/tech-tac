@@ -39,7 +39,8 @@ app.post('/parts', authenticateAdmin, (req, res) => {
     _creator: req.user._id,
     number: req.body.number,
     image: req.body.image,
-    price: req.body.price
+    price: req.body.price,
+    categories: req.body.categories
   });
 
   part.save().then((doc) => {
@@ -109,7 +110,7 @@ app.delete('/parts/:id', authenticateAdmin, (req, res) => {
 
 app.patch('/parts/:id', authenticateAdmin, (req, res) => {
   var id = req.params.id;
-  var body = _.pick(req.body, ['name', 'description', 'image', 'price', 'number']);
+  var body = _.pick(req.body, ['name', 'description', 'image', 'price', 'number', 'categories']);
 
   if (!ObjectID.isValid(id)) {
     return res.status(404).send();
