@@ -134,6 +134,15 @@ app.get('/users/me', authenticate, (req, res) => {
   res.send(req.user);
 });
 
+//GET /users
+app.get('/users', authenticateAdmin, (req, res) => {
+  User.find().then((users) => {
+    res.send({users});
+  }, (e) => {
+    res.status(400).send(e);
+  });
+});
+
 
 // POST /users
 app.post('/users', (req, res) => {
