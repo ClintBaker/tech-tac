@@ -18,7 +18,7 @@ var {authenticateAdmin} = require('./middleware/authenticateAdmin');
 var app = express();
 
 const corsOptions = {
-  origin: ['http://localhost:3000', 'http://gentle-dawn-87327.herokuapp.com/', 'https://gentle-dawn-87327.herokuapp.com/'],
+  origin: ['http://localhost:3000', 'http://gentle-dawn-87327.herokuapp.com', 'https://gentle-dawn-87327.herokuapp.com'],
   allowedHeaders: ['Accept-Version', 'Authorization', 'x-auth', 'Credentials', 'Content-Type'],
   exposedHeaders: ['X-Request-Id', 'x-auth'],
   preflightContinue: true
